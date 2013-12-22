@@ -1,8 +1,13 @@
 saxulum-doctrine-mongodb-odm-provider
 =====================================
 
-Provides Doctrine MongoDB ODM Document Managers as services to Pimple applications.
+**works with plain silex-php**
 
+[![Build Status](https://api.travis-ci.org/saxulum/saxulum-doctrine-mongodb-odm-provider.png?branch=master)](https://travis-ci.org/saxulum/saxulum-doctrine-mongodb-odm-provider)
+[![Total Downloads](https://poser.pugx.org/saxulum/saxulum-doctrine-mongodb-odm-provider/downloads.png)](https://packagist.org/packages/saxulum/saxulum-doctrine-mongodb-odm-provider)
+[![Latest Stable Version](https://poser.pugx.org/saxulum/saxulum-doctrine-mongodb-odm-provider/v/stable.png)](https://packagist.org/packages/saxulum/saxulum-doctrine-mongodb-odm-provider)
+
+Provides Doctrine MongoDB ODM Document Managers as services to Pimple applications.
 
 Features
 --------
@@ -380,6 +385,11 @@ Not Invented Here
 
 This project is based heavily on the work done by [@dflydev][1]
 on the [dflydev/dflydev-doctrine-orm-service-provider][2] project.
+
+Copyright
+---------
+* Dominik Zogg <dominik.zogg@gmail.com>
+* Beau Simensen <beau@dflydev.com> ([Doctrine ORM Service Provider][2])
 
 
 [1]: https://github.com/dflydev
