@@ -1,0 +1,29 @@
+{
+    "name": "saxulum/saxulum-doctrine-mongodb-odm-provider",
+    "description": "Saxulum Doctrine MongoDB ODM Provider",
+    "keywords": ["saxulum", "pimple", "cilex", "silex", "doctrine", "mongo", "mongodb", "odm"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dominik Zogg",
+            "email": "dominik.zogg@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "doctrine/mongodb-odm": "1.*@beta",
+        "pimple/pimple": "~1.0",
+        "saxulum/saxulum-doctrine-mongodb-provider": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "cilex/cilex": "~1.0",
+        "silex/silex": "~1.1"
+    },
+    "suggest": {
+        "dflydev/psr0-resource-locator-service-provider": "1.0.*@dev"
+    },
+    "autoload": {
+        "psr-0": { "Saxulum\\DoctrineMongoDbOdm": "src/" }
+    }
+}
