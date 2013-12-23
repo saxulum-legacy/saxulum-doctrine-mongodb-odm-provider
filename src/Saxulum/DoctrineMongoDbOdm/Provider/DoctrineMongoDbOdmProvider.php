@@ -34,6 +34,7 @@ class DoctrineMongoDbOdmProvider
 
         $container['mongodbodm.dm.default_options'] = array(
             'connection' => 'default',
+            'database' => null,
             'mappings' => array(),
             'types' => array()
         );
@@ -82,6 +83,10 @@ class DoctrineMongoDbOdmProvider
                     $config = $container['mongodbodm.dm.config'];
                 } else {
                     $config = $container['mongodbodm.dms.config'][$name];
+                }
+
+                if(isset($options['database'])) {
+                    $config->setDefaultDB($options['database']);
                 }
 
                 $dms[$name] = $container->share(function () use ($container, $options, $config) {

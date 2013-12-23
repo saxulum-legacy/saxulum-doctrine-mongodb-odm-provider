@@ -80,6 +80,7 @@ $container["mongodb.options"] = array(
 $container["mongodbodm.proxies_dir"] = "/path/to/proxies";
 $container["mongodbodm.hydrator_dir"] = "/path/to/hydrator";
 $container["mongodbodm.dm.options"] = array(
+    "database" => "test",
     "mappings" => array(
         // Using actual filesystem paths
         array(
@@ -142,6 +143,7 @@ $app->register(new DoctrineMongoDbOdmProvider, array(
     "mongodbodm.proxies_dir" => "/path/to/proxies",
     "mongodbodm.hydrator_dir" => "/path/to/hydrator",
     "mongodbodm.dm.options" => array(
+        "database" => "test",
         "mappings" => array(
             // Using actual filesystem paths
             array(
@@ -206,6 +208,8 @@ Configuration
    * **connection** (Default: default):
      String defining which database connection to use. Used when using
      named databases via **mongodbs**.
+   * **database**
+     The database which should be uses
    * **mappings**:
      Array of mapping definitions.
 
