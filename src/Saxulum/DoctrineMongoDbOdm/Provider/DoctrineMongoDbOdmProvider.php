@@ -73,7 +73,7 @@ class DoctrineMongoDbOdmProvider
             return $container['mongodbodm.dms.default'];
         });
 
-        $container['mongodbodm.dms'] = $container->share(function() use ($container) {
+        $container['mongodbodm.dms'] = $container->share(function () use ($container) {
             $container['mongodbodm.dms.options.initializer']();
 
             $dms = new \Pimple();
@@ -85,7 +85,7 @@ class DoctrineMongoDbOdmProvider
                     $config = $container['mongodbodm.dms.config'][$name];
                 }
 
-                if(isset($options['database'])) {
+                if (isset($options['database'])) {
                     $config->setDefaultDB($options['database']);
                 }
 
@@ -101,7 +101,7 @@ class DoctrineMongoDbOdmProvider
             return $dms;
         });
 
-        $container['mongodbodm.dms.config'] = $container->share(function() use($container) {
+        $container['mongodbodm.dms.config'] = $container->share(function () use ($container) {
             $container['mongodbodm.dms.options.initializer']();
 
             $configs = new \Pimple();
@@ -174,11 +174,11 @@ class DoctrineMongoDbOdmProvider
             return $configs;
         });
 
-        $container['mongodbodm.cache.configurer'] = $container->protect(function($name, Configuration $config, $options) use ($container) {
+        $container['mongodbodm.cache.configurer'] = $container->protect(function ($name, Configuration $config, $options) use ($container) {
             $config->setMetadataCacheImpl($container['mongodbodm.cache.locator']($name, 'metadata', $options));
         });
 
-        $container['mongodbodm.cache.locator'] = $container->protect(function($name, $cacheName, $options) use ($container) {
+        $container['mongodbodm.cache.locator'] = $container->protect(function ($name, $cacheName, $options) use ($container) {
             $cacheNameKey = $cacheName . '_cache';
 
             if (!isset($options[$cacheNameKey])) {
@@ -204,18 +204,18 @@ class DoctrineMongoDbOdmProvider
 
             $cache = $container['mongodbodm.cache.factory']($driver, $options[$cacheNameKey]);
 
-            if(isset($options['cache_namespace']) && $cache instanceof CacheProvider) {
+            if (isset($options['cache_namespace']) && $cache instanceof CacheProvider) {
                 $cache->setNamespace($options['cache_namespace']);
             }
 
             return $container[$cacheInstanceKey] = $cache;
         });
 
-        $container['mongodbodm.cache.factory.backing_memcache'] = $container->protect(function() {
+        $container['mongodbodm.cache.factory.backing_memcache'] = $container->protect(function () {
             return new \Memcache;
         });
 
-        $container['mongodbodm.cache.factory.memcache'] = $container->protect(function($cacheOptions) use ($container) {
+        $container['mongodbodm.cache.factory.memcache'] = $container->protect(function ($cacheOptions) use ($container) {
             if (empty($cacheOptions['host']) || empty($cacheOptions['port'])) {
                 throw new \RuntimeException('Host and port options need to be specified for memcache cache');
             }
@@ -229,11 +229,11 @@ class DoctrineMongoDbOdmProvider
             return $cache;
         });
 
-        $container['mongodbodm.cache.factory.backing_memcached'] = $container->protect(function() {
+        $container['mongodbodm.cache.factory.backing_memcached'] = $container->protect(function () {
             return new \Memcached;
         });
 
-        $container['mongodbodm.cache.factory.memcached'] = $container->protect(function($cacheOptions) use ($container) {
+        $container['mongodbodm.cache.factory.memcached'] = $container->protect(function ($cacheOptions) use ($container) {
             if (empty($cacheOptions['host']) || empty($cacheOptions['port'])) {
                 throw new \RuntimeException('Host and port options need to be specified for memcached cache');
             }
@@ -247,11 +247,11 @@ class DoctrineMongoDbOdmProvider
             return $cache;
         });
 
-        $container['mongodbodm.cache.factory.backing_redis'] = $container->protect(function() {
+        $container['mongodbodm.cache.factory.backing_redis'] = $container->protect(function () {
             return new \Redis;
         });
 
-        $container['mongodbodm.cache.factory.redis'] = $container->protect(function($cacheOptions) use ($container) {
+        $container['mongodbodm.cache.factory.redis'] = $container->protect(function ($cacheOptions) use ($container) {
             if (empty($cacheOptions['host']) || empty($cacheOptions['port'])) {
                 throw new \RuntimeException('Host and port options need to be specified for redis cache');
             }
@@ -265,26 +265,27 @@ class DoctrineMongoDbOdmProvider
             return $cache;
         });
 
-        $container['mongodbodm.cache.factory.array'] = $container->protect(function() {
+        $container['mongodbodm.cache.factory.array'] = $container->protect(function () {
             return new ArrayCache;
         });
 
-        $container['mongodbodm.cache.factory.apc'] = $container->protect(function() {
+        $container['mongodbodm.cache.factory.apc'] = $container->protect(function () {
             return new ApcCache;
         });
 
-        $container['mongodbodm.cache.factory.xcache'] = $container->protect(function() {
+        $container['mongodbodm.cache.factory.xcache'] = $container->protect(function () {
             return new XcacheCache;
         });
 
-        $container['mongodbodm.cache.factory.filesystem'] = $container->protect(function($cacheOptions) {
+        $container['mongodbodm.cache.factory.filesystem'] = $container->protect(function ($cacheOptions) {
             if (empty($cacheOptions['path'])) {
                 throw new \RuntimeException('FilesystemCache path not defined');
             }
+
             return new FilesystemCache($cacheOptions['path']);
         });
 
-        $container['mongodbodm.cache.factory'] = $container->protect(function($driver, $cacheOptions) use ($container) {
+        $container['mongodbodm.cache.factory'] = $container->protect(function ($driver, $cacheOptions) use ($container) {
             switch ($driver) {
                 case 'array':
                     return $container['mongodbodm.cache.factory.array']();
@@ -305,7 +306,7 @@ class DoctrineMongoDbOdmProvider
             }
         });
 
-        $container['mongodbodm.mapping_driver_chain.locator'] = $container->protect(function($name = null) use ($container) {
+        $container['mongodbodm.mapping_driver_chain.locator'] = $container->protect(function ($name = null) use ($container) {
             $container['mongodbodm.dms.options.initializer']();
 
             if (null === $name) {
@@ -320,11 +321,11 @@ class DoctrineMongoDbOdmProvider
             return $container[$cacheInstanceKey] = $container['mongodbodm.mapping_driver_chain.factory']($name);
         });
 
-        $container['mongodbodm.mapping_driver_chain.factory'] = $container->protect(function($name) use ($container) {
+        $container['mongodbodm.mapping_driver_chain.factory'] = $container->protect(function ($name) use ($container) {
             return new MappingDriverChain;
         });
 
-        $container['mongodbodm.add_mapping_driver'] = $container->protect(function(MappingDriver $mappingDriver, $namespace, $name = null) use ($container) {
+        $container['mongodbodm.add_mapping_driver'] = $container->protect(function (MappingDriver $mappingDriver, $namespace, $name = null) use ($container) {
             $container['mongodbodm.dms.options.initializer']();
 
             if (null === $name) {
@@ -335,7 +336,7 @@ class DoctrineMongoDbOdmProvider
             $driverChain->addDriver($mappingDriver, $namespace);
         });
 
-        $container['mongodbodm.generate_psr0_mapping'] = $container->protect(function($resourceMapping) use ($container) {
+        $container['mongodbodm.generate_psr0_mapping'] = $container->protect(function ($resourceMapping) use ($container) {
             $mapping = array();
             foreach ($resourceMapping as $resourceNamespace => $entityNamespace) {
                 $directory = $container['psr0_resource_locator']->findFirstDirectory($resourceNamespace);
@@ -348,13 +349,13 @@ class DoctrineMongoDbOdmProvider
             return $mapping;
         });
 
-        $container['mongodbodm.dm'] = $container->share(function($container) {
+        $container['mongodbodm.dm'] = $container->share(function ($container) {
             $dms = $container['mongodbodm.dms'];
 
             return $dms[$container['mongodbodm.dms.default']];
         });
 
-        $container['mongodbodm.dm.config'] = $container->share(function($container) {
+        $container['mongodbodm.dm.config'] = $container->share(function ($container) {
             $configs = $container['mongodbodm.dms.config'];
 
             return $configs[$container['mongodbodm.dms.default']];
@@ -362,7 +363,7 @@ class DoctrineMongoDbOdmProvider
     }
 
     /**
-     * @param \Pimple $container
+     * @param  \Pimple $container
      * @return array
      */
     protected function getMongodbOdmDefaults(\Pimple $container)
