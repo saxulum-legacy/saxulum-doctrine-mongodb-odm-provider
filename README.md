@@ -69,11 +69,11 @@ use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
 $container = new \Pimple;
 
 $container["mongodb.options"] = array(
-    'server' => 'mongodb://localhost:27017',
-    'options' => array(
-        'username' => 'root',
-        'password' => 'root',
-        'db' => 'admin'
+    "server" => "mongodb://localhost:27017",
+    "options" => array(
+        "username" => "root",
+        "password" => "root",
+        "db" => "admin"
     )
 );
 
@@ -130,11 +130,11 @@ $app = new Application;
 
 $app->register(new DoctrineMongoDbProvider, array(
     "mongodb.options" => array(
-        'server' => 'mongodb://localhost:27017',
-        'options' => array(
-            'username' => 'root',
-            'password' => 'root',
-            'db' => 'admin'
+        "server" => "mongodb://localhost:27017",
+        "options" => array(
+            "username" => "root",
+            "password" => "root",
+            "db" => "admin"
         ),
     ),
 ));
