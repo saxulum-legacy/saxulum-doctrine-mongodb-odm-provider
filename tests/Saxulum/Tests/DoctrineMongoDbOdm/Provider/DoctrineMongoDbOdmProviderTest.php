@@ -1,6 +1,6 @@
 <?php
 
-namespace Saxulum\Test\DoctrineMongoDbOdm\Provider;
+namespace Saxulum\Tests\DoctrineMongoDbOdm\Provider;
 
 use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
 
