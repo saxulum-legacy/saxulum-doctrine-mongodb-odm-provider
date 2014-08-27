@@ -114,7 +114,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     /**
      * Test hydrator configuration (defaults)
      */
-    public function testProxyConfigurationDefaults()
+    public function testHydratorConfigurationDefaults()
     {
         $container = $this->createMockDefaultApp();
 
@@ -129,16 +129,16 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     /**
      * Test hydrator configuration (defined)
      */
-    public function testProxyConfigurationDefined()
+    public function testHydratorConfigurationDefined()
     {
         $container = $this->createMockDefaultApp();
 
         $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
         $doctrineOrmServiceProvider->register($container);
 
-        $container['mongodbodm.proxies_dir'] = '/path/to/hydrators';
-        $container['mongodbodm.proxies_namespace'] = 'TestDoctrineMongoDbOdmHydratorsNamespace';
-        $container['mongodbodm.auto_generate_proxies'] = false;
+        $container['mongodbodm.hydrator_dir'] = '/path/to/hydrators';
+        $container['mongodbodm.hydrator_namespace'] = 'TestDoctrineMongoDbOdmHydratorsNamespace';
+        $container['mongodbodm.auto_generate_hydrator'] = false;
 
         $this->assertEquals('/path/to/hydrators', $container['mongodbodm.dm.config']->getHydratorDir());
         $this->assertEquals('TestDoctrineMongoDbOdmHydratorsNamespace', $container['mongodbodm.dm.config']->getHydratorNamespace());
