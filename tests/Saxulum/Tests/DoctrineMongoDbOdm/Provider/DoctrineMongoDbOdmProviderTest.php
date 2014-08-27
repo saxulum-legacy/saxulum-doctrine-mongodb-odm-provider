@@ -138,7 +138,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 
         $container['mongodbodm.hydrator_dir'] = '/path/to/hydrators';
         $container['mongodbodm.hydrator_namespace'] = 'TestDoctrineMongoDbOdmHydratorsNamespace';
-        $container['mongodbodm.auto_generate_hydrator'] = false;
+        $container['mongodbodm.auto_generate_hydrators'] = false;
 
         $this->assertEquals('/path/to/hydrators', $container['mongodbodm.dm.config']->getHydratorDir());
         $this->assertEquals('TestDoctrineMongoDbOdmHydratorsNamespace', $container['mongodbodm.dm.config']->getHydratorNamespace());
