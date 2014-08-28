@@ -1,5 +1,5 @@
 composer.lock
-/tests/cache
+/cache
 /vendor
 
 .idea

@@ -63,8 +63,8 @@ class DoctrineOrmServiceProviderTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('mongo is not available');
         }
 
-        $proxyPath = __DIR__ . '../../../../../../cache/doctrine/proxies';
-        $hydratorPath = __DIR__ . '../../../../../../cache/doctrine/hydrator';
+        $proxyPath = __DIR__ . '/../../../../../../cache/doctrine/proxies';
+        $hydratorPath = __DIR__ . '/../../../../../../cache/doctrine/hydrator';
 
         @mkdir($proxyPath, 0777, true);
         @mkdir($hydratorPath, 0777, true);
