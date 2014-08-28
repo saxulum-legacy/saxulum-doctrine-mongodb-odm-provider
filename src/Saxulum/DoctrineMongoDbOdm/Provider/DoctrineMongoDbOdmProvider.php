@@ -115,6 +115,7 @@ class DoctrineMongoDbOdmProvider
                 $config->setAutoGenerateProxyClasses($container['mongodbodm.auto_generate_proxies']);
                 $config->setHydratorDir($container['mongodbodm.hydrator_dir']);
                 $config->setHydratorNamespace($container['mongodbodm.hydrator_namespace']);
+                $config->setAutoGenerateHydratorClasses($container['mongodbodm.auto_generate_hydrators']);
 
                 $chain = $container['mongodbodm.mapping_driver_chain.locator']($name);
                 foreach ((array) $options['mappings'] as $entity) {
@@ -374,6 +375,7 @@ class DoctrineMongoDbOdmProvider
             'mongodbodm.auto_generate_proxies' => true,
             'mongodbodm.hydrator_dir' => __DIR__.'/../../../../../../../../cache/doctrine/hydrator',
             'mongodbodm.hydrator_namespace' => 'DoctrineHydrator',
+            'mongodbodm.auto_generate_hydrators' => true,
             'mongodbodm.default_cache' => 'array',
         );
     }
