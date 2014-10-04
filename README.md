@@ -24,15 +24,6 @@ Requirements
  * PHP 5.3+
  * Doctrine MongoDB ODM ~1.0@BETA
 
-Optional Dependencies
----------------------
-
-### PSR-0 Resource Locator Service Provider
-
-An implementation of [dflydev/psr0-resource-locator-service-provider][3]
-is required if using namespaceish resource mapping. See documentation
-for **mongodbodm.generate_psr0_mapping** for more information.
-
 
 Installation
 ------------
@@ -63,70 +54,11 @@ $em = $app['mongodbodm.dm'];
 ```php
 <?php
 
+use Pimple\Container;
 use Saxulum\DoctrineMongoDb\Provider\DoctrineMongoDbProvider;
 use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
 
-$container = new \Pimple;
-
-$container["mongodb.options"] = array(
-    "server" => "mongodb://localhost:27017",
-    "options" => array(
-        "username" => "root",
-        "password" => "root",
-        "db" => "admin"
-    )
-);
-
-$container["mongodbodm.proxies_dir"] = "/path/to/proxies";
-$container["mongodbodm.hydrator_dir"] = "/path/to/hydrator";
-$container["mongodbodm.dm.options"] = array(
-    "database" => "test",
-    "mappings" => array(
-        // Using actual filesystem paths
-        array(
-            "type" => "annotation",
-            "namespace" => "Foo\Entities",
-            "path" => __DIR__."/src/Foo/Entities",
-        ),
-        array(
-            "type" => "xml",
-            "namespace" => "Bat\Entities",
-            "path" => __DIR__."/src/Bat/Resources/mappings",
-        ),
-        // Using PSR-0 namespaceish embedded resources
-        // (requires registering a PSR-0 Resource Locator
-        // Service Provider)
-        array(
-            "type" => "annotation",
-            "namespace" => "Baz\Entities",
-            "resources_namespace" => "Baz\Entities",
-        ),
-        array(
-            "type" => "xml",
-            "namespace" => "Bar\Entities",
-            "resources_namespace" => "Bar\Resources\mappings",
-        ),
-    ),
-);
-
-$doctrineMongoDbServiceProvider = new DoctrineMongoDbProvider;
-$doctrineMongoDbServiceProvider->register($container);
-
-$doctrineMongoDbOdmServiceProvider = new DoctrineMongoDbOdmProvider;
-$doctrineMongoDbOdmServiceProvider->register($container);
-```
-
-### Silex
-
-```php
-<?php
-
-use Saxulum\DoctrineMongoDb\Silex\Provider\DoctrineMongoDbProvider;
-use Saxulum\DoctrineMongoDbOdm\Silex\Provider\DoctrineMongoDbOdmProvider;
-use Silex\Application;
-use Silex\Provider\DoctrineServiceProvider;
-
-$app = new Application;
+$app = new Container;
 
 $app->register(new DoctrineMongoDbProvider, array(
     "mongodb.options" => array(
@@ -171,27 +103,6 @@ $app->register(new DoctrineMongoDbOdmProvider, array(
             ),
         ),
     ),
-));
-```
-
-### Cilex
-
-```php
-<?php
-
-use Saxulum\DoctrineMongoDb\Cilex\Provider\DoctrineMongoDbProvider;
-use Saxulum\DoctrineMongoDbOdm\Cilex\Provider\DoctrineMongoDbOdmProvider;
-use Cilex\Application;
-use Cilex\Provider\DoctrineServiceProvider;
-
-$app = new Application('My Application');
-
-$app->register(new DoctrineMongoDbProvider, array(
-    /** same as the Silex example **/
-));
-
-$app->register(new DoctrineMongoDbOdmProvider, array(
-    /** same as the Silex example **/
 ));
 ```
 
@@ -321,29 +232,6 @@ Configuration
 
    This code should be able to be used inside of a 3rd party service provider
    safely, whether the user has defined `3rdparty.provider.dm` or not.
- * **mongodbodm.generate_psr0_mapping**:
-   Leverages [dflydev/psr0-resource-locator-service-provider][3] to process
-   a map of namespaceish resource directories to their mapped entities.
-
-   Example usage:
-   ```php
-   <?php
-   $app['mongodbodm.dms.config'] = $app->share($app->extend('mongodbodm.dms.config', function ($config, $app) {
-       $mapping = $app['mongodbodm.generate_psr0_mapping'](array(
-           'Foo\Resources\mappings' => 'Foo\Entities',
-           'Bar\Resources\mappings' => 'Bar\Entities',
-       ));
-
-       $chain = $app['mongodbodm.mapping_driver_chain.locator']();
-
-       foreach ($mapping as $directory => $namespace) {
-           $driver = new XmlDriver($directory);
-           $chain->addDriver($driver, $namespace);
-       }
-
-       return $config;
-   }));
-   ```
 
 ### Services
 

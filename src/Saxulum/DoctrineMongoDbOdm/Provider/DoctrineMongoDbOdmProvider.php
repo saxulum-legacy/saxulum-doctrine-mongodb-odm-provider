@@ -15,6 +15,8 @@ use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\Driver\SimplifiedXmlDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\SimplifiedYamlDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\XmlDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
 use Doctrine\ODM\MongoDB\Types\Type;
@@ -127,10 +129,6 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                         );
                     }
 
-                    if (!empty($entity['resources_namespace'])) {
-                        $entity['path'] = $container['psr0_resource_locator']->findFirstDirectory($entity['resources_namespace']);
-                    }
-
                     if (isset($entity['alias'])) {
                         $config->addDocumentNamespace($entity['alias'], $entity['namespace']);
                     }
@@ -148,10 +146,18 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                             $driver = new YamlDriver($entity['path']);
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
+//                        case 'simple_yml':
+//                            $driver = new SimplifiedYamlDriver(array($entity['path'] => $entity['namespace']));
+//                            $chain->addDriver($driver, $entity['namespace']);
+//                            break;
                         case 'xml':
                             $driver = new XmlDriver($entity['path']);
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
+//                        case 'simple_xml':
+//                            $driver = new SimplifiedXmlDriver(array($entity['path'] => $entity['namespace']));
+//                            $chain->addDriver($driver, $entity['namespace']);
+//                            break;
                         case 'php':
                             $driver = new StaticPHPDriver($entity['path']);
                             $chain->addDriver($driver, $entity['namespace']);
@@ -223,6 +229,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 throw new \RuntimeException('Host and port options need to be specified for memcache cache');
             }
 
+            /** @var \Memcache $memcache */
             $memcache = $container['mongodbodm.cache.factory.backing_memcache']();
             $memcache->connect($cacheOptions['host'], $cacheOptions['port']);
 
@@ -241,6 +248,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 throw new \RuntimeException('Host and port options need to be specified for memcached cache');
             }
 
+            /** @var \Memcached $memcached */
             $memcached = $container['mongodbodm.cache.factory.backing_memcached']();
             $memcached->addServer($cacheOptions['host'], $cacheOptions['port']);
 
@@ -262,6 +270,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             $redis = $container['mongodbodm.cache.factory.backing_redis']();
             $redis->connect($cacheOptions['host'], $cacheOptions['port']);
 
+            /** @var \Redis $redis */
             $cache = new RedisCache();
             $cache->setRedis($redis);
 
@@ -335,21 +344,9 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 $name = $container['mongodbodm.dms.default'];
             }
 
+            /** @var MappingDriverChain $driverChain */
             $driverChain = $container['mongodbodm.mapping_driver_chain.locator']($name);
             $driverChain->addDriver($mappingDriver, $namespace);
-        });
-
-        $container['mongodbodm.generate_psr0_mapping'] = $container->protect(function ($resourceMapping) use ($container) {
-            $mapping = array();
-            foreach ($resourceMapping as $resourceNamespace => $entityNamespace) {
-                $directory = $container['psr0_resource_locator']->findFirstDirectory($resourceNamespace);
-                if (!$directory) {
-                    throw new \InvalidArgumentException("Resources for mapping '$entityNamespace' could not be located; Looked for mapping resources at '$resourceNamespace'");
-                }
-                $mapping[$directory] = $entityNamespace;
-            }
-
-            return $mapping;
         });
 
         $container['mongodbodm.dm'] = function ($container) {
