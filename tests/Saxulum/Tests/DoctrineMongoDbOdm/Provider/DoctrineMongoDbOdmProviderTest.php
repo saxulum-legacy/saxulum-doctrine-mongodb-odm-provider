@@ -2,13 +2,17 @@
 
 namespace Saxulum\Tests\DoctrineMongoDbOdm\Provider;
 
+use Doctrine\ODM\MongoDB\DocumentRepository;
+use Pimple\Container;
+use Saxulum\DoctrineMongoDb\Provider\DoctrineMongoDbProvider;
 use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
+use Saxulum\Tests\DoctrineMongoDbOdm\Document\Page;
 
 class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected function createMockDefaultAppAndDeps()
     {
-        $container = new \Pimple;
+        $container = new Container();
 
         $eventManager = $this->getMock('Doctrine\Common\EventManager');
         $connection = $this
@@ -21,15 +25,15 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
             ->method('getEventManager')
             ->will($this->returnValue($eventManager));
 
-        $container['mongodbs'] = new \Pimple(array(
+        $container['mongodbs'] = new Container(array(
             'default' => $connection,
         ));
 
-        $container['mongodbs.event_manager'] = new \Pimple(array(
+        $container['mongodbs.event_manager'] = new Container(array(
             'default' => $eventManager,
         ));
 
-        return array($container, $connection, $eventManager);;
+        return array($container, $connection, $eventManager);
     }
 
     protected function createMockDefaultApp()
@@ -46,7 +50,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $this->assertEquals($container['mongodbodm.dm'], $container['mongodbodm.dms']['default']);
@@ -69,7 +73,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 
         $container['mongodbodm.mapping_driver_chain.instances.default'] = $mappingDriverChain;
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $this->assertEquals($container['mongodbodm.dm'], $container['mongodbodm.dms']['default']);
@@ -84,7 +88,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $this->assertContains('/../../../../../../../cache/doctrine/proxies', $container['mongodbodm.dm.config']->getProxyDir());
@@ -99,7 +103,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $container['mongodbodm.proxies_dir'] = '/path/to/proxies';
@@ -118,7 +122,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $this->assertContains('/../../../../../../../cache/doctrine/hydrator', $container['mongodbodm.dm.config']->getHydratorDir());
@@ -133,7 +137,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $container['mongodbodm.hydrator_dir'] = '/path/to/hydrators';
@@ -152,7 +156,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $default = $container['mongodbodm.mapping_driver_chain.locator']();
@@ -177,7 +181,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 
         $container['mongodbodm.mapping_driver_chain.instances.default'] = $mappingDriverChain;
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $container['mongodbodm.add_mapping_driver']($mappingDriver, 'Test\Namespace');
@@ -200,7 +204,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 
         $container['mongodbodm.mapping_driver_chain.instances.default'] = $mappingDriverChain;
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $container['mongodbodm.add_mapping_driver']($mappingDriver, 'Test\Namespace');
@@ -215,7 +219,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 
         $container['my.baz'] = 'baz';
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $container['mongodbodm.dms.default'] = 'foo';
@@ -235,7 +239,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $container['mongodbodm.dm.options'] = array(
@@ -256,7 +260,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider;
+        $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
         $alias = 'Foo';
@@ -274,5 +278,63 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($namespace, $container['mongodbodm.dm.config']->getDocumentNameSpace($alias));
+    }
+
+    public function testAnnotationMapping()
+    {
+        if (!extension_loaded('mongo')) {
+            $this->markTestSkipped('mongo is not available');
+        }
+
+        $proxyPath = __DIR__ . '/../../../../../../cache/doctrine/proxies';
+        $hydratorPath = __DIR__ . '/../../../../../../cache/doctrine/hydrator';
+
+        @mkdir($proxyPath, 0777, true);
+        @mkdir($hydratorPath, 0777, true);
+
+        $app = new Container();
+
+        $app->register(new DoctrineMongoDbProvider(), array(
+            'mongodb.options' => array(
+                'server' => 'mongodb://localhost:27017'
+            )
+        ));
+
+        $app->register(new DoctrineMongoDbOdmProvider(), array(
+            "mongodbodm.proxies_dir" => $proxyPath,
+            "mongodbodm.hydrator_dir" => $hydratorPath,
+            "mongodbodm.dm.options" => array(
+                "database" => "test",
+                "mappings" => array(
+                    array(
+                        "type" => "annotation",
+                        "namespace" => "Saxulum\\Tests\\DoctrineMongoDbOdm\\Document",
+                        "path" => __DIR__."../../Document",
+                        "use_simple_annotation_reader" => false
+                    )
+                ),
+            ),
+        ));
+
+        $title = 'title';
+        $body = 'body';
+
+        $page = new Page();
+        $page->setTitle($title);
+        $page->setBody($body);
+
+        $app['mongodbodm.dm']->persist($page);
+        $app['mongodbodm.dm']->flush();
+
+        $repository = $app['mongodbodm.dm']
+            ->getRepository("Saxulum\\Tests\\DoctrineMongoDbOdm\\Document\\Page")
+        ;
+        /** @var DocumentRepository $repository */
+
+        $pageFromDb = $repository->findOneBy(array(), array('id' => 'DESC'));
+        /** @var Page $pageFromDb */
+
+        $this->assertEquals($title, $pageFromDb->getTitle());
+        $this->assertEquals($body, $pageFromDb->getBody());
     }
 }

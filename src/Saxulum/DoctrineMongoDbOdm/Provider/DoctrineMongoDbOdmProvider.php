@@ -18,13 +18,15 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\XmlDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
 use Doctrine\ODM\MongoDB\Types\Type;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
-class DoctrineMongoDbOdmProvider
+class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
 {
     /**
-     * @param \Pimple $container
+     * @param Container $container
      */
-    public function register(\Pimple $container)
+    public function register(Container $container)
     {
         foreach ($this->getMongodbOdmDefaults($container) as $key => $value) {
             if (!isset($container[$key])) {
@@ -73,10 +75,10 @@ class DoctrineMongoDbOdmProvider
             return $container['mongodbodm.dms.default'];
         });
 
-        $container['mongodbodm.dms'] = $container->share(function () use ($container) {
+        $container['mongodbodm.dms'] = function () use ($container) {
             $container['mongodbodm.dms.options.initializer']();
 
-            $dms = new \Pimple();
+            $dms = new Container();
             foreach ($container['mongodbodm.dms.options'] as $name => $options) {
                 if ($container['mongodbodm.dms.default'] === $name) {
                     // we use shortcuts here in case the default has been overridden
@@ -89,24 +91,24 @@ class DoctrineMongoDbOdmProvider
                     $config->setDefaultDB($options['database']);
                 }
 
-                $dms[$name] = $container->share(function () use ($container, $options, $config) {
+                $dms[$name] = function () use ($container, $options, $config) {
                     return DocumentManager::create(
                         $container['mongodbs'][$options['connection']],
                         $config,
                         $container['mongodbs.event_manager'][$options['connection']]
                     );
-                });
+                };
             }
 
             return $dms;
-        });
+        };
 
-        $container['mongodbodm.dms.config'] = $container->share(function () use ($container) {
+        $container['mongodbodm.dms.config'] = function () use ($container) {
             $container['mongodbodm.dms.options.initializer']();
 
-            $configs = new \Pimple();
+            $configs = new Container();
             foreach ($container['mongodbodm.dms.options'] as $name => $options) {
-                $config = new Configuration;
+                $config = new Configuration();
 
                 $container['mongodbodm.cache.configurer']($name, $config, $options);
 
@@ -173,7 +175,7 @@ class DoctrineMongoDbOdmProvider
             }
 
             return $configs;
-        });
+        };
 
         $container['mongodbodm.cache.configurer'] = $container->protect(function ($name, Configuration $config, $options) use ($container) {
             $config->setMetadataCacheImpl($container['mongodbodm.cache.locator']($name, 'metadata', $options));
@@ -213,7 +215,7 @@ class DoctrineMongoDbOdmProvider
         });
 
         $container['mongodbodm.cache.factory.backing_memcache'] = $container->protect(function () {
-            return new \Memcache;
+            return new \Memcache();
         });
 
         $container['mongodbodm.cache.factory.memcache'] = $container->protect(function ($cacheOptions) use ($container) {
@@ -224,14 +226,14 @@ class DoctrineMongoDbOdmProvider
             $memcache = $container['mongodbodm.cache.factory.backing_memcache']();
             $memcache->connect($cacheOptions['host'], $cacheOptions['port']);
 
-            $cache = new MemcacheCache;
+            $cache = new MemcacheCache();
             $cache->setMemcache($memcache);
 
             return $cache;
         });
 
         $container['mongodbodm.cache.factory.backing_memcached'] = $container->protect(function () {
-            return new \Memcached;
+            return new \Memcached();
         });
 
         $container['mongodbodm.cache.factory.memcached'] = $container->protect(function ($cacheOptions) use ($container) {
@@ -242,14 +244,14 @@ class DoctrineMongoDbOdmProvider
             $memcached = $container['mongodbodm.cache.factory.backing_memcached']();
             $memcached->addServer($cacheOptions['host'], $cacheOptions['port']);
 
-            $cache = new MemcachedCache;
+            $cache = new MemcachedCache();
             $cache->setMemcached($memcached);
 
             return $cache;
         });
 
         $container['mongodbodm.cache.factory.backing_redis'] = $container->protect(function () {
-            return new \Redis;
+            return new \Redis();
         });
 
         $container['mongodbodm.cache.factory.redis'] = $container->protect(function ($cacheOptions) use ($container) {
@@ -260,22 +262,22 @@ class DoctrineMongoDbOdmProvider
             $redis = $container['mongodbodm.cache.factory.backing_redis']();
             $redis->connect($cacheOptions['host'], $cacheOptions['port']);
 
-            $cache = new RedisCache;
+            $cache = new RedisCache();
             $cache->setRedis($redis);
 
             return $cache;
         });
 
         $container['mongodbodm.cache.factory.array'] = $container->protect(function () {
-            return new ArrayCache;
+            return new ArrayCache();
         });
 
         $container['mongodbodm.cache.factory.apc'] = $container->protect(function () {
-            return new ApcCache;
+            return new ApcCache();
         });
 
         $container['mongodbodm.cache.factory.xcache'] = $container->protect(function () {
-            return new XcacheCache;
+            return new XcacheCache();
         });
 
         $container['mongodbodm.cache.factory.filesystem'] = $container->protect(function ($cacheOptions) {
@@ -323,7 +325,7 @@ class DoctrineMongoDbOdmProvider
         });
 
         $container['mongodbodm.mapping_driver_chain.factory'] = $container->protect(function ($name) use ($container) {
-            return new MappingDriverChain;
+            return new MappingDriverChain();
         });
 
         $container['mongodbodm.add_mapping_driver'] = $container->protect(function (MappingDriver $mappingDriver, $namespace, $name = null) use ($container) {
@@ -350,24 +352,24 @@ class DoctrineMongoDbOdmProvider
             return $mapping;
         });
 
-        $container['mongodbodm.dm'] = $container->share(function ($container) {
+        $container['mongodbodm.dm'] = function ($container) {
             $dms = $container['mongodbodm.dms'];
 
             return $dms[$container['mongodbodm.dms.default']];
-        });
+        };
 
-        $container['mongodbodm.dm.config'] = $container->share(function ($container) {
+        $container['mongodbodm.dm.config'] = function ($container) {
             $configs = $container['mongodbodm.dms.config'];
 
             return $configs[$container['mongodbodm.dms.default']];
-        });
+        };
     }
 
     /**
-     * @param  \Pimple $container
+     * @param  Container $container
      * @return array
      */
-    protected function getMongodbOdmDefaults(\Pimple $container)
+    protected function getMongodbOdmDefaults(Container $container)
     {
         return array(
             'mongodbodm.proxies_dir' => __DIR__.'/../../../../../../../../cache/doctrine/proxies',
