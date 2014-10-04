@@ -15,7 +15,7 @@ matrix:
     - php: hhvm
 
 before_script:
-  - echo 'extension=mongo.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - yes '' | pecl -q install -f mongo-${MONGO_VERSION} && echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - composer --prefer-source --dev install
 
 script: phpunit --coverage-text --verbose
