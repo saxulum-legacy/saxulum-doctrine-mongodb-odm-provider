@@ -3,16 +3,16 @@
 namespace Saxulum\Tests\DoctrineMongoDbOdm\Provider;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
-use Pimple\Container;
 use Saxulum\DoctrineMongoDb\Provider\DoctrineMongoDbProvider;
 use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
 use Saxulum\Tests\DoctrineMongoDbOdm\Document\Page;
+use Silex\Application;
 
 class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected function createMockDefaultAppAndDeps()
     {
-        $container = new Container();
+        $container = new Application();
 
         $eventManager = $this->getMock('Doctrine\Common\EventManager');
         $connection = $this
@@ -25,11 +25,11 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
             ->method('getEventManager')
             ->will($this->returnValue($eventManager));
 
-        $container['mongodbs'] = new Container(array(
+        $container['mongodbs'] = new \Pimple(array(
             'default' => $connection,
         ));
 
-        $container['mongodbs.event_manager'] = new Container(array(
+        $container['mongodbs.event_manager'] = new \Pimple(array(
             'default' => $eventManager,
         ));
 
@@ -292,7 +292,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
         @mkdir($proxyPath, 0777, true);
         @mkdir($hydratorPath, 0777, true);
 
-        $app = new Container();
+        $app = new Application();
 
         $app->register(new DoctrineMongoDbProvider(), array(
             'mongodb.options' => array(
