@@ -146,18 +146,18 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                             $driver = new YamlDriver($entity['path']);
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
-//                        case 'simple_yml':
-//                            $driver = new SimplifiedYamlDriver(array($entity['path'] => $entity['namespace']));
-//                            $chain->addDriver($driver, $entity['namespace']);
-//                            break;
+                        case 'simple_yml':
+                            $driver = new SimplifiedYamlDriver(array($entity['path'] => $entity['namespace']));
+                            $chain->addDriver($driver, $entity['namespace']);
+                            break;
                         case 'xml':
                             $driver = new XmlDriver($entity['path']);
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
-//                        case 'simple_xml':
-//                            $driver = new SimplifiedXmlDriver(array($entity['path'] => $entity['namespace']));
-//                            $chain->addDriver($driver, $entity['namespace']);
-//                            break;
+                        case 'simple_xml':
+                            $driver = new SimplifiedXmlDriver(array($entity['path'] => $entity['namespace']));
+                            $chain->addDriver($driver, $entity['namespace']);
+                            break;
                         case 'php':
                             $driver = new StaticPHPDriver($entity['path']);
                             $chain->addDriver($driver, $entity['namespace']);
