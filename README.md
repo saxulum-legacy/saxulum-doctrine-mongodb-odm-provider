@@ -215,7 +215,7 @@ Configuration
 
      Each mapping definition should be an array with the following
      options:
-     * **type**: Mapping driver type, one of `annotation`, `xml`, `yml` or `php`.
+     * **type**: Mapping driver type, one of `annotation`, `xml`, `yml`, `simple_xml`, `simple_yml` or `php`.
      * **namespace**: Namespace in which the entities reside.
 
      Additionally, each mapping definition should contain one of the
