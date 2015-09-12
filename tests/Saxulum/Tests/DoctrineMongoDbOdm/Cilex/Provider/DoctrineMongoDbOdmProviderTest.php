@@ -8,7 +8,7 @@ use Saxulum\DoctrineMongoDbOdm\Cilex\Provider\DoctrineMongoDbOdmProvider;
 use Saxulum\Tests\DoctrineMongoDbOdm\Document\Page;
 use Cilex\Application;
 
-class DoctrineOrmServiceProviderTest extends \PHPUnit_Framework_TestCase
+class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected function createMockDefaultAppAndDeps()
     {
