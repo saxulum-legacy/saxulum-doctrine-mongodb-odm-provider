@@ -5,6 +5,7 @@ namespace Saxulum\DoctrineMongoDbOdm\Provider;
 use Doctrine\Common\Cache\ApcCache;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\CacheProvider;
+use Doctrine\Common\Cache\CouchbaseCache;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\Cache\MemcacheCache;
 use Doctrine\Common\Cache\MemcachedCache;
@@ -19,6 +20,7 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\SimplifiedXmlDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\SimplifiedYamlDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\XmlDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
+use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -40,7 +42,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             'connection' => 'default',
             'database' => null,
             'mappings' => array(),
-            'types' => array()
+            'types' => array(),
         );
 
         $container['mongodbodm.dms.options.initializer'] = $container->protect(function () use ($container) {
@@ -117,9 +119,15 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 $config->setProxyDir($container['mongodbodm.proxies_dir']);
                 $config->setProxyNamespace($container['mongodbodm.proxies_namespace']);
                 $config->setAutoGenerateProxyClasses($container['mongodbodm.auto_generate_proxies']);
+
                 $config->setHydratorDir($container['mongodbodm.hydrator_dir']);
                 $config->setHydratorNamespace($container['mongodbodm.hydrator_namespace']);
                 $config->setAutoGenerateHydratorClasses($container['mongodbodm.auto_generate_hydrators']);
+
+                $config->setClassMetadataFactoryName($container['mongodbodm.class_metadata_factory_name']);
+                $config->setDefaultRepositoryClassName($container['mongodbodm.default_repository_class']);
+
+                $config->setRepositoryFactory($container['mongodbodm.repository_factory']);
 
                 $chain = $container['mongodbodm.mapping_driver_chain.locator']($name);
                 foreach ((array) $options['mappings'] as $entity) {
@@ -188,7 +196,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
         });
 
         $container['mongodbodm.cache.locator'] = $container->protect(function ($name, $cacheName, $options) use ($container) {
-            $cacheNameKey = $cacheName . '_cache';
+            $cacheNameKey = $cacheName.'_cache';
 
             if (!isset($options[$cacheNameKey])) {
                 $options[$cacheNameKey] = $container['mongodbodm.default_cache'];
@@ -267,10 +275,14 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 throw new \RuntimeException('Host and port options need to be specified for redis cache');
             }
 
+            /** @var \Redis $redis */
             $redis = $container['mongodbodm.cache.factory.backing_redis']();
             $redis->connect($cacheOptions['host'], $cacheOptions['port']);
 
-            /** @var \Redis $redis */
+            if (isset($cacheOptions['password'])) {
+                $redis->auth($cacheOptions['password']);
+            }
+
             $cache = new RedisCache();
             $cache->setRedis($redis);
 
@@ -294,7 +306,35 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 throw new \RuntimeException('FilesystemCache path not defined');
             }
 
-            return new FilesystemCache($cacheOptions['path']);
+            $cacheOptions += array(
+                'extension' => FilesystemCache::EXTENSION,
+                'umask' => 0002,
+            );
+
+            return new FilesystemCache($cacheOptions['path'], $cacheOptions['extension'], $cacheOptions['umask']);
+        });
+
+        $container['mongodbodm.cache.factory.couchbase'] = $container->protect(function ($cacheOptions) {
+
+            if (empty($cacheOptions['host'])) {
+                $cacheOptions['host'] = '127.0.0.1';
+            }
+
+            if (empty($cacheOptions['bucket'])) {
+                $cacheOptions['bucket'] = 'default';
+            }
+
+            $couchbase = new \Couchbase(
+                $cacheOptions['host'],
+                $cacheOptions['user'],
+                $cacheOptions['password'],
+                $cacheOptions['bucket']
+            );
+
+            $cache = new CouchbaseCache();
+            $cache->setCouchbase($couchbase);
+
+            return $cache;
         });
 
         $container['mongodbodm.cache.factory'] = $container->protect(function ($driver, $cacheOptions) use ($container) {
@@ -313,6 +353,8 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                     return $container['mongodbodm.cache.factory.filesystem']($cacheOptions);
                 case 'redis':
                     return $container['mongodbodm.cache.factory.redis']($cacheOptions);
+                case 'couchbase':
+                    return $container['mongodbodm.cache.factory.couchbase']($cacheOptions);
                 default:
                     throw new \RuntimeException("Unsupported cache type '$driver' specified");
             }
@@ -349,6 +391,10 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             $driverChain->addDriver($mappingDriver, $namespace);
         });
 
+        $container['mongodbodm.repository_factory'] = function ($container) {
+            return new DefaultRepositoryFactory();
+        };
+
         $container['mongodbodm.dm'] = function ($container) {
             $dms = $container['mongodbodm.dms'];
 
@@ -363,7 +409,8 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param  Container $container
+     * @param Container $container
+     *
      * @return array
      */
     protected function getMongodbOdmDefaults(Container $container)
@@ -372,10 +419,14 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             'mongodbodm.proxies_dir' => __DIR__.'/../../../../../../../../cache/doctrine/proxies',
             'mongodbodm.proxies_namespace' => 'DoctrineProxy',
             'mongodbodm.auto_generate_proxies' => true,
+            'mongodbodm.default_cache' => array(
+                'driver' => 'array',
+            ),
             'mongodbodm.hydrator_dir' => __DIR__.'/../../../../../../../../cache/doctrine/hydrator',
             'mongodbodm.hydrator_namespace' => 'DoctrineHydrator',
             'mongodbodm.auto_generate_hydrators' => true,
-            'mongodbodm.default_cache' => 'array',
+            'mongodbodm.class_metadata_factory_name' => 'Doctrine\ODM\MongoDB\Mapping\ClassMetadataFactory',
+            'mongodbodm.default_repository_class' => 'Doctrine\ODM\MongoDB\DocumentRepository',
         );
     }
 }
