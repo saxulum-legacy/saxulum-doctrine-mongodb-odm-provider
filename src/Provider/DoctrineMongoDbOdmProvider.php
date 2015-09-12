@@ -427,13 +427,13 @@ class DoctrineMongoDbOdmProvider
     protected function getMongodbOdmDefaults(\Pimple $container)
     {
         return array(
-            'mongodbodm.proxies_dir' => __DIR__.'/../../../../../../../../cache/doctrine/proxies',
+            'mongodbodm.proxies_dir' => __DIR__.'/../../cache/doctrine/proxies',
             'mongodbodm.proxies_namespace' => 'DoctrineProxy',
             'mongodbodm.auto_generate_proxies' => true,
             'mongodbodm.default_cache' => array(
                 'driver' => 'array',
             ),
-            'mongodbodm.hydrator_dir' => __DIR__.'/../../../../../../../../cache/doctrine/hydrator',
+            'mongodbodm.hydrator_dir' => __DIR__.'/../../cache/doctrine/hydrator',
             'mongodbodm.hydrator_namespace' => 'DoctrineHydrator',
             'mongodbodm.auto_generate_hydrators' => true,
             'mongodbodm.class_metadata_factory_name' => 'Doctrine\ODM\MongoDB\Mapping\ClassMetadataFactory',
