@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": "~5.3",
         "doctrine/mongodb-odm": "1.*@beta",
         "pimple/pimple": "~1.0",
         "saxulum/saxulum-doctrine-mongodb-provider": "~1.0"
@@ -24,6 +24,6 @@
         "dflydev/psr0-resource-locator-service-provider": "1.0.*@dev"
     },
     "autoload": {
-        "psr-0": { "Saxulum\\DoctrineMongoDbOdm": "src/" }
+        "psr-4": { "Saxulum\\DoctrineMongoDbOdm\\": "src/" }
     }
 }
