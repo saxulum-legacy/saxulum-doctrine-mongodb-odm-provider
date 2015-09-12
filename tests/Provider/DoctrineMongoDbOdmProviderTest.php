@@ -91,7 +91,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
         $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
-        $this->assertContains('/../../../../../../../cache/doctrine/proxies', $container['mongodbodm.dm.config']->getProxyDir());
+        $this->assertContains('/../../cache/doctrine/proxies', $container['mongodbodm.dm.config']->getProxyDir());
         $this->assertEquals('DoctrineProxy', $container['mongodbodm.dm.config']->getProxyNamespace());
         $this->assertTrue($container['mongodbodm.dm.config']->getAutoGenerateProxyClasses());
     }
@@ -125,7 +125,7 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
         $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
-        $this->assertContains('/../../../../../../../cache/doctrine/hydrator', $container['mongodbodm.dm.config']->getHydratorDir());
+        $this->assertContains('/../../cache/doctrine/hydrator', $container['mongodbodm.dm.config']->getHydratorDir());
         $this->assertEquals('DoctrineHydrator', $container['mongodbodm.dm.config']->getHydratorNamespace());
         $this->assertTrue($container['mongodbodm.dm.config']->getAutoGenerateHydratorClasses());
     }
