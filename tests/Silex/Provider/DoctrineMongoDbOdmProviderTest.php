@@ -63,8 +63,8 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('mongo is not available');
         }
 
-        $proxyPath = __DIR__ . '/../../../../../../cache/doctrine/proxies';
-        $hydratorPath = __DIR__ . '/../../../../../../cache/doctrine/hydrator';
+        $proxyPath = $this->getCacheDir() . '/doctrine/proxies';
+        $hydratorPath = $this->getCacheDir() . '/doctrine/hydrator';
 
         @mkdir($proxyPath, 0777, true);
         @mkdir($hydratorPath, 0777, true);
@@ -113,5 +113,18 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($title, $pageFromDb->getTitle());
         $this->assertEquals($body, $pageFromDb->getBody());
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCacheDir()
+    {
+        $cacheDir =  __DIR__ . '/../../../cache';
+        if (!is_dir($cacheDir)) {
+            mkdir($cacheDir, 0777, true);
+        }
+
+        return $cacheDir;
     }
 }
