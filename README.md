@@ -22,7 +22,7 @@ Requirements
 ------------
 
  * PHP 5.3+
- * Doctrine MongoDB ODM ~1.0@BETA
+ * Doctrine MongoDB ODM ~1.0
 
 
 Installation
