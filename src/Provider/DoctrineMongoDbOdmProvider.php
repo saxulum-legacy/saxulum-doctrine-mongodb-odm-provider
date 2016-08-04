@@ -3,6 +3,7 @@
 namespace Saxulum\DoctrineMongoDbOdm\Provider;
 
 use Doctrine\Common\Cache\ApcCache;
+use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Cache\CouchbaseCache;
@@ -297,6 +298,10 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             return new ApcCache();
         });
 
+        $container['mongodbodm.cache.factory.apcu'] = $container->protect(function () {
+            return new ApcuCache();
+        });
+
         $container['mongodbodm.cache.factory.xcache'] = $container->protect(function () {
             return new XcacheCache();
         });
@@ -343,6 +348,8 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                     return $container['mongodbodm.cache.factory.array']();
                 case 'apc':
                     return $container['mongodbodm.cache.factory.apc']();
+                case 'apcu':
+                    return $container['mongodbodm.cache.factory.apcu']();
                 case 'xcache':
                     return $container['mongodbodm.cache.factory.xcache']();
                 case 'memcache':
