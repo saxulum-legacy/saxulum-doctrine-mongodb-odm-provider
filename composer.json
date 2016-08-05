@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "~5.3",
+        "php": "~7.0|~5.3",
         "doctrine/mongodb-odm": "~1.0",
         "pimple/pimple": ">=2.1,<4",
         "saxulum/saxulum-doctrine-mongodb-provider": "~2.0"
