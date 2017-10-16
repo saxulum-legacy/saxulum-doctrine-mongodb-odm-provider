@@ -136,7 +136,14 @@ Configuration
        need to be configured correctly so that it can load your Annotations
        classes. See this FAQ:
        [Why aren't my Annotations classes being found?](#why-arent-my-annotations-classes-being-found)
-   * **metadata_cache** (Default: setting specified by mongodbodm.default_cache):
+
+     Each **php** mapping may also specify the following options:
+     * **static** (Default: true):
+      If `true`, the static php driver will be used, which means each document needs to add:
+      public static function loadMetadata(ClassMetadata $metadata)
+      If `false`, the php driver will be used, each document needs to have a mapping file
+
+   * **met adata_cache** (Default: setting specified by mongodbodm.default_cache):
      String or array describing metadata cache implementation.
    * **types**
      An array of custom types in the format of 'typeName' => 'Namespace\To\Type\Class'

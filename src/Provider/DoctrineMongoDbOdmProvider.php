@@ -14,6 +14,7 @@ use Doctrine\Common\Cache\RedisCache;
 use Doctrine\Common\Cache\XcacheCache;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
+use Doctrine\Common\Persistence\Mapping\Driver\PHPDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -168,7 +169,11 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
                         case 'php':
-                            $driver = new StaticPHPDriver($entity['path']);
+                            if (!isset($entity['static']) || $entity['static']) {
+                                $driver = new StaticPHPDriver($entity['path']);
+                            } else {
+                                $driver = new PHPDriver($entity['path']);
+                            }
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
                         default:
