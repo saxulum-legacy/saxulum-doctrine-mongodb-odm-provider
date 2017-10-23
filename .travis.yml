@@ -9,7 +9,6 @@ php:
 
 before_script:
   - echo 'extension=mongodb.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo 'extension=mongo.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer --prefer-source install
 
 script: phpunit --coverage-text --verbose

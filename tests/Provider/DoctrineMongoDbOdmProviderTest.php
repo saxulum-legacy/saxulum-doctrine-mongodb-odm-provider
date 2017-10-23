@@ -284,8 +284,8 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
 
     public function testAnnotationMapping()
     {
-        if (!extension_loaded('mongo')) {
-            $this->markTestSkipped('mongo is not available');
+        if (!extension_loaded('mongodb')) {
+            $this->markTestSkipped('mongodb is not available');
         }
 
         $proxyPath = $this->getCacheDir() . '/doctrine/proxies';
