@@ -7,10 +7,8 @@ use Saxulum\DoctrineMongoDbOdm\Driver\OdmMappingInterface;
 
 class PageMapping implements OdmMappingInterface
 {
-
     /**
      * @param ClassMetadata $metadata
-     * @return void
      */
     public function configureMapping(ClassMetadata $metadata)
     {

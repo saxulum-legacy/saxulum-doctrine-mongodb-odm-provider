@@ -37,6 +37,7 @@ class Page
 
     /**
      * @param $title
+     *
      * @return $this
      */
     public function setTitle($title)
@@ -56,6 +57,7 @@ class Page
 
     /**
      * @param $body
+     *
      * @return $this
      */
     public function setBody($body)

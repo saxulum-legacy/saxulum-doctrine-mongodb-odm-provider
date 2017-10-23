@@ -8,7 +8,6 @@ use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 
 class ClassMapDriver implements MappingDriver
 {
-
     /**
      * @var array|string[]
      */
@@ -27,8 +26,6 @@ class ClassMapDriver implements MappingDriver
      *
      * @param string        $className
      * @param ClassMetadata $metadata
-     *
-     * @return void
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
@@ -44,12 +41,12 @@ class ClassMapDriver implements MappingDriver
 
         $mappingClassName = $this->classMap[$className];
 
-        if (($mapping = new $mappingClassName()) instanceof OdmMappingInterface === false) {
+        if (false === ($mapping = new $mappingClassName()) instanceof OdmMappingInterface) {
             throw new \LogicException('Class %s does not implement the OdmMappingInterface');
         }
 
-        /** @var OdmMappingInterface $mapping */
-        /** @var OdmClassMetadata $metadata */
+        /* @var OdmMappingInterface $mapping */
+        /* @var OdmClassMetadata $metadata */
 
         $mapping->configureMapping($metadata);
     }
@@ -57,7 +54,7 @@ class ClassMapDriver implements MappingDriver
     /**
      * Gets the names of all mapped classes known to this driver.
      *
-     * @return array The names of all mapped classes known to this driver.
+     * @return array the names of all mapped classes known to this driver
      */
     public function getAllClassNames()
     {
@@ -70,7 +67,7 @@ class ClassMapDriver implements MappingDriver
      *
      * @param string $className
      *
-     * @return boolean
+     * @return bool
      */
     public function isTransient($className)
     {

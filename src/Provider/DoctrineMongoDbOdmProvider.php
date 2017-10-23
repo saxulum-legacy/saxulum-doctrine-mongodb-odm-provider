@@ -41,12 +41,12 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             }
         }
 
-        $container['mongodbodm.dm.default_options'] = array(
+        $container['mongodbodm.dm.default_options'] = [
             'connection' => 'default',
             'database' => null,
-            'mappings' => array(),
-            'types' => array(),
-        );
+            'mappings' => [],
+            'types' => [],
+        ];
 
         $container['mongodbodm.dms.options.initializer'] = $container->protect(function () use ($container) {
             static $initialized = false;
@@ -58,7 +58,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             $initialized = true;
 
             if (!isset($container['mongodbodm.dms.options'])) {
-                $container['mongodbodm.dms.options'] = array('default' => isset($container['mongodbodm.dm.options']) ? $container['mongodbodm.dm.options'] : array());
+                $container['mongodbodm.dms.options'] = ['default' => isset($container['mongodbodm.dm.options']) ? $container['mongodbodm.dm.options'] : []];
             }
 
             $tmp = $container['mongodbodm.dms.options'];
@@ -159,7 +159,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
                         case 'simple_yml':
-                            $driver = new SimplifiedYamlDriver(array($entity['path'] => $entity['namespace']));
+                            $driver = new SimplifiedYamlDriver([$entity['path'] => $entity['namespace']]);
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
                         case 'xml':
@@ -215,9 +215,9 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             }
 
             if (isset($options[$cacheNameKey]) && !is_array($options[$cacheNameKey])) {
-                $options[$cacheNameKey] = array(
+                $options[$cacheNameKey] = [
                     'driver' => $options[$cacheNameKey],
-                );
+                ];
             }
 
             if (!isset($options[$cacheNameKey]['driver'])) {
@@ -322,16 +322,15 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 throw new \RuntimeException('FilesystemCache path not defined');
             }
 
-            $cacheOptions += array(
+            $cacheOptions += [
                 'extension' => FilesystemCache::EXTENSION,
                 'umask' => 0002,
-            );
+            ];
 
             return new FilesystemCache($cacheOptions['path'], $cacheOptions['extension'], $cacheOptions['umask']);
         });
 
         $container['mongodbodm.cache.factory.couchbase'] = $container->protect(function ($cacheOptions) {
-
             if (empty($cacheOptions['host'])) {
                 $cacheOptions['host'] = '127.0.0.1';
             }
@@ -433,18 +432,18 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
      */
     protected function getMongodbOdmDefaults(Container $container)
     {
-        return array(
+        return [
             'mongodbodm.proxies_dir' => __DIR__.'/../../cache/doctrine/proxies',
             'mongodbodm.proxies_namespace' => 'DoctrineProxy',
             'mongodbodm.auto_generate_proxies' => true,
-            'mongodbodm.default_cache' => array(
+            'mongodbodm.default_cache' => [
                 'driver' => 'array',
-            ),
+            ],
             'mongodbodm.hydrator_dir' => __DIR__.'/../../cache/doctrine/hydrator',
             'mongodbodm.hydrator_namespace' => 'DoctrineHydrator',
             'mongodbodm.auto_generate_hydrators' => true,
             'mongodbodm.class_metadata_factory_name' => 'Doctrine\ODM\MongoDB\Mapping\ClassMetadataFactory',
             'mongodbodm.default_repository_class' => 'Doctrine\ODM\MongoDB\DocumentRepository',
-        );
+        ];
     }
 }

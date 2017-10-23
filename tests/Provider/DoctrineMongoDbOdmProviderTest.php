@@ -23,26 +23,26 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
             ->method('getEventManager')
             ->will($this->returnValue($eventManager));
 
-        $container['mongodbs'] = new Container(array(
+        $container['mongodbs'] = new Container([
             'default' => $connection,
-        ));
+        ]);
 
-        $container['mongodbs.event_manager'] = new Container(array(
+        $container['mongodbs.event_manager'] = new Container([
             'default' => $eventManager,
-        ));
+        ]);
 
-        return array($container, $connection, $eventManager);
+        return [$container, $connection, $eventManager];
     }
 
     protected function createMockDefaultApp()
     {
-        list ($container, $connection, $eventManager) = $this->createMockDefaultAppAndDeps();
+        list($container, $connection, $eventManager) = $this->createMockDefaultAppAndDeps();
 
         return $container;
     }
 
     /**
-     * Test registration (test expected class for default implementations)
+     * Test registration (test expected class for default implementations).
      */
     public function testRegisterDefaultImplementations()
     {
@@ -57,7 +57,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test registration (test equality for defined implementations)
+     * Test registration (test equality for defined implementations).
      */
     public function testRegisterDefinedImplementations()
     {
@@ -84,7 +84,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test proxy configuration (defaults)
+     * Test proxy configuration (defaults).
      */
     public function testProxyConfigurationDefaults()
     {
@@ -99,7 +99,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test proxy configuration (defined)
+     * Test proxy configuration (defined).
      */
     public function testProxyConfigurationDefined()
     {
@@ -118,7 +118,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test hydrator configuration (defaults)
+     * Test hydrator configuration (defaults).
      */
     public function testHydratorConfigurationDefaults()
     {
@@ -133,7 +133,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test hydrator configuration (defined)
+     * Test hydrator configuration (defined).
      */
     public function testHydratorConfigurationDefined()
     {
@@ -152,7 +152,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test Driver Chain locator
+     * Test Driver Chain locator.
      */
     public function testMappingDriverChainLocator()
     {
@@ -167,7 +167,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test adding a mapping driver (use default document manager)
+     * Test adding a mapping driver (use default document manager).
      */
     public function testAddMappingDriverDefault()
     {
@@ -190,7 +190,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test adding a mapping driver (specify default document manager by name)
+     * Test adding a mapping driver (specify default document manager by name).
      */
     public function testAddMappingDriverNamedEntityManager()
     {
@@ -213,7 +213,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test mongodbodm.dm_name_from_param_key ()
+     * Test mongodbodm.dm_name_from_param_key ().
      */
     public function testNameFromParamKey()
     {
@@ -232,9 +232,9 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
     }
 
     /**
-     * Test specifying an invalid mapping configuration (not an array of arrays)
+     * Test specifying an invalid mapping configuration (not an array of arrays).
      *
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage The 'mongodbodm.dm.options' option 'mappings' should be an array of arrays.
      */
     public function testInvalidMappingAsOption()
@@ -244,19 +244,19 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
         $doctrineOrmServiceProvider = new DoctrineMongoDbOdmProvider();
         $doctrineOrmServiceProvider->register($container);
 
-        $container['mongodbodm.dm.options'] = array(
-            'mappings' => array(
+        $container['mongodbodm.dm.options'] = [
+            'mappings' => [
                 'type' => 'annotation',
                 'namespace' => 'Foo\Entities',
                 'path' => __DIR__.'/src/Foo/Entities',
-            ),
-        );
+            ],
+        ];
 
         $container['mongodbodm.dms.config'];
     }
 
     /**
-     * Test if namespace alias can be set through the mapping options
+     * Test if namespace alias can be set through the mapping options.
      */
     public function testMappingAlias()
     {
@@ -268,16 +268,16 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
         $alias = 'Foo';
         $namespace = 'Foo\Entities';
 
-        $container['mongodbodm.dm.options'] = array(
-            'mappings' => array(
-                array(
+        $container['mongodbodm.dm.options'] = [
+            'mappings' => [
+                [
                     'type' => 'annotation',
                     'namespace' => $namespace,
                     'path' => __DIR__.'/src/Foo/Entities',
-                    'alias' => $alias
-                )
-            ),
-        );
+                    'alias' => $alias,
+                ],
+            ],
+        ];
 
         $this->assertEquals($namespace, $container['mongodbodm.dm.config']->getDocumentNameSpace($alias));
     }
@@ -288,35 +288,35 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
             $this->markTestSkipped('mongodb is not available');
         }
 
-        $proxyPath = $this->getCacheDir() . '/doctrine/proxies';
-        $hydratorPath = $this->getCacheDir() . '/doctrine/hydrator';
+        $proxyPath = $this->getCacheDir().'/doctrine/proxies';
+        $hydratorPath = $this->getCacheDir().'/doctrine/hydrator';
 
         @mkdir($proxyPath, 0777, true);
         @mkdir($hydratorPath, 0777, true);
 
         $app = new Container();
 
-        $app->register(new DoctrineMongoDbProvider(), array(
-            'mongodb.options' => array(
-                'server' => 'mongodb://localhost:27017'
-            )
-        ));
+        $app->register(new DoctrineMongoDbProvider(), [
+            'mongodb.options' => [
+                'server' => 'mongodb://localhost:27017',
+            ],
+        ]);
 
-        $app->register(new DoctrineMongoDbOdmProvider(), array(
-            "mongodbodm.proxies_dir" => $proxyPath,
-            "mongodbodm.hydrator_dir" => $hydratorPath,
-            "mongodbodm.dm.options" => array(
-                "database" => "test",
-                "mappings" => array(
-                    array(
-                        "type" => "annotation",
-                        "namespace" => "Saxulum\\Tests\\DoctrineMongoDbOdm\\Document",
-                        "path" => __DIR__."../../Document",
-                        "use_simple_annotation_reader" => false
-                    )
-                ),
-            ),
-        ));
+        $app->register(new DoctrineMongoDbOdmProvider(), [
+            'mongodbodm.proxies_dir' => $proxyPath,
+            'mongodbodm.hydrator_dir' => $hydratorPath,
+            'mongodbodm.dm.options' => [
+                'database' => 'test',
+                'mappings' => [
+                    [
+                        'type' => 'annotation',
+                        'namespace' => 'Saxulum\\Tests\\DoctrineMongoDbOdm\\Document',
+                        'path' => __DIR__.'../../Document',
+                        'use_simple_annotation_reader' => false,
+                    ],
+                ],
+            ],
+        ]);
 
         $title = 'title';
         $body = 'body';
@@ -329,12 +329,11 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
         $app['mongodbodm.dm']->flush();
 
         $repository = $app['mongodbodm.dm']
-            ->getRepository("Saxulum\\Tests\\DoctrineMongoDbOdm\\Document\\Page")
+            ->getRepository('Saxulum\\Tests\\DoctrineMongoDbOdm\\Document\\Page')
         ;
         /** @var DocumentRepository $repository */
-
-        $pageFromDb = $repository->findOneBy(array(), array('id' => 'DESC'));
-        /** @var Page $pageFromDb */
+        $pageFromDb = $repository->findOneBy([], ['id' => 'DESC']);
+        /* @var Page $pageFromDb */
 
         $this->assertEquals($title, $pageFromDb->getTitle());
         $this->assertEquals($body, $pageFromDb->getBody());
@@ -345,7 +344,7 @@ class DoctrineMongoDbOdmProviderTest extends TestCase
      */
     protected function getCacheDir()
     {
-        $cacheDir =  __DIR__ . '/../../cache';
+        $cacheDir = __DIR__.'/../../cache';
 
         if (!is_dir($cacheDir)) {
             mkdir($cacheDir, 0777, true);

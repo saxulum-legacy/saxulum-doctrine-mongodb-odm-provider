@@ -60,16 +60,16 @@ use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
 
 $app = new Container;
 
-$app->register(new DoctrineMongoDbProvider, array(
-    "mongodb.options" => array(
+$app->register(new DoctrineMongoDbProvider, [
+    "mongodb.options" => [
         "server" => "mongodb://localhost:27017",
-        "options" => array(
+        "options" => [
             "username" => "root",
             "password" => "root",
             "db" => "admin"
-        ),
-    ),
-));
+        ],
+    ],
+]);
 
 $app->register(new DoctrineMongoDbOdmProvider, [
     "mongodbodm.proxies_dir" => "/path/to/proxies",
@@ -168,24 +168,24 @@ Configuration
    ```php
    <?php
    $app['mongodbodm.dms.default'] = 'sqlite';
-   $app['mongodbodm.dms.options'] = array(
-        'mongo1' => array(
+   $app['mongodbodm.dms.options'] = [
+        'mongo1' => [
             'server' => 'mongodb://localhost:27017',
-            'options' => array(
+            'options' => [
                 'username' => 'root',
                 'password' => 'root',
                 'db' => 'admin'
-            )
-        ),
-        'mongo2' => array(
+            ]
+        ],
+        'mongo2' => [
             'server' => 'mongodb://localhost:27018',
-            'options' => array(
+            'options' => [
                 'username' => 'root',
                 'password' => 'root',
                 'db' => 'admin'
-            )
-        )
-   );
+            ]
+        ]
+   ];
    ```
 
    Example usage:
@@ -262,7 +262,7 @@ Example:
 <?php
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
-\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 ```
 
 License
