@@ -26,6 +26,7 @@ use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Saxulum\DoctrineMongoDbOdm\Driver\ClassMapDriver;
 
 class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
 {
@@ -131,6 +132,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
 
                 $config->setRepositoryFactory($container['mongodbodm.repository_factory']);
 
+                /** @var MappingDriverChain $chain */
                 $chain = $container['mongodbodm.mapping_driver_chain.locator']($name);
                 foreach ((array) $options['mappings'] as $entity) {
                     if (!is_array($entity)) {
@@ -165,7 +167,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
                         case 'simple_xml':
-                            $driver = new SimplifiedXmlDriver(array($entity['path'] => $entity['namespace']));
+                            $driver = new SimplifiedXmlDriver([$entity['path'] => $entity['namespace']]);
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
                         case 'php':
@@ -174,6 +176,10 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                             } else {
                                 $driver = new PHPDriver($entity['path']);
                             }
+                            $chain->addDriver($driver, $entity['namespace']);
+                            break;
+                        case 'class_map':
+                            $driver = new ClassMapDriver($entity['map']);
                             $chain->addDriver($driver, $entity['namespace']);
                             break;
                         default:

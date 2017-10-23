@@ -3,22 +3,20 @@
 namespace Saxulum\Tests\DoctrineMongoDbOdm\Provider;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
+use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Saxulum\DoctrineMongoDb\Provider\DoctrineMongoDbProvider;
 use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
 use Saxulum\Tests\DoctrineMongoDbOdm\Document\Page;
 
-class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
+class DoctrineMongoDbOdmProviderTest extends TestCase
 {
     protected function createMockDefaultAppAndDeps()
     {
         $container = new Container();
 
-        $eventManager = $this->getMock('Doctrine\Common\EventManager');
-        $connection = $this
-            ->getMockBuilder('Doctrine\MongoDB\Connection')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $eventManager = $this->getMockBuilder('Doctrine\Common\EventManager')->disableOriginalConstructor()->getMock();
+        $connection = $this->getMockBuilder('Doctrine\MongoDB\Connection')->disableOriginalConstructor()->getMock();
 
         $connection
             ->expects($this->any())
@@ -65,9 +63,13 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $metadataCache = $this->getMock('Doctrine\Common\Cache\ArrayCache');
+        $metadataCache = $this->getMockBuilder('Doctrine\Common\Cache\ArrayCache')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $mappingDriverChain = $this->getMock('Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
+        $mappingDriverChain = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $container['mongodbodm.cache.instances.default.metadata'] = $metadataCache;
 
@@ -171,9 +173,9 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $mappingDriver = $this->getMock('Doctrine\Common\Persistence\Mapping\Driver\MappingDriver');
+        $mappingDriver = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriver')->disableOriginalConstructor()->getMock();
 
-        $mappingDriverChain = $this->getMock('Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
+        $mappingDriverChain = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain')->disableOriginalConstructor()->getMock();
         $mappingDriverChain
             ->expects($this->once())
             ->method('addDriver')
@@ -194,9 +196,9 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createMockDefaultApp();
 
-        $mappingDriver = $this->getMock('Doctrine\Common\Persistence\Mapping\Driver\MappingDriver');
+        $mappingDriver = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriver')->disableOriginalConstructor()->getMock();
 
-        $mappingDriverChain = $this->getMock('Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain');
+        $mappingDriverChain = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain')->disableOriginalConstructor()->getMock();
         $mappingDriverChain
             ->expects($this->once())
             ->method('addDriver')
@@ -282,8 +284,8 @@ class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAnnotationMapping()
     {
-        if (!extension_loaded('mongo')) {
-            $this->markTestSkipped('mongo is not available');
+        if (!extension_loaded('mongodb')) {
+            $this->markTestSkipped('mongodb is not available');
         }
 
         $proxyPath = $this->getCacheDir() . '/doctrine/proxies';
