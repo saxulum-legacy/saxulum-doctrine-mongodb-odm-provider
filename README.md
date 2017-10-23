@@ -120,7 +120,8 @@ Configuration
 
      Each mapping definition should be an array with the following
      options:
-     * **type**: Mapping driver type, one of `annotation`, `xml`, `yml`, `simple_xml`, `simple_yml` or `php`.
+     * **type**: Mapping driver type, one of `annotation`, `xml`, `yml`, `simple_xml`, `simple_yml`, `php`
+     or `class_map`.
      * **namespace**: Namespace in which the entities reside.
 
      Additionally, each mapping definition should contain one of the
@@ -149,6 +150,10 @@ Configuration
       If `true`, the static php driver will be used, which means each document needs to add:
       public static function loadMetadata(ClassMetadata $metadata)
       If `false`, the php driver will be used, each document needs to have a mapping file
+
+     Each **class_map** mapping may also specify the following options:
+     * **map**:
+      Array key represents the entity class name, value represents the mapping for the entity class 
 
    * **met adata_cache** (Default: setting specified by mongodbodm.default_cache):
      String or array describing metadata cache implementation.
