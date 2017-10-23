@@ -25,7 +25,7 @@ class ClassMapDriverTest extends TestCase
 
         $classMetadata
             ->expects(self::at(1))
-            ->method('mapField')git
+            ->method('mapField')
             ->with([
                 'fieldName' => 'id',
                 'type' => 'string',
