@@ -17,13 +17,13 @@ class Page
 
     /**
      * @var string
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     protected $title;
 
     /**
      * @var string
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     protected $body;
 
