@@ -71,26 +71,33 @@ $app->register(new DoctrineMongoDbProvider, array(
     ),
 ));
 
-$app->register(new DoctrineMongoDbOdmProvider, array(
+$app->register(new DoctrineMongoDbOdmProvider, [
     "mongodbodm.proxies_dir" => "/path/to/proxies",
     "mongodbodm.hydrator_dir" => "/path/to/hydrator",
-    "mongodbodm.dm.options" => array(
+    "mongodbodm.dm.options" => [
         "database" => "test",
-        "mappings" => array(
+        "mappings" => [
             // Using actual filesystem paths
-            array(
+            [
                 "type" => "annotation",
                 "namespace" => "Foo\Entities",
                 "path" => __DIR__."/src/Foo/Entities",
-            ),
-            array(
+            ],
+            [
                 "type" => "xml",
                 "namespace" => "Bat\Entities",
                 "path" => __DIR__."/src/Bat/Resources/mappings",
-            ),
-        ),
-    ),
-));
+            ],
+            [
+                'type' => 'class_map',
+                'namespace' => 'Bar\Entities',
+                'map' => [
+                    'Bar\Entities\Bar' => 'Sample\Mapping\Bar'    
+                ]    
+            ]
+        ],
+    ],
+]);
 ```
 
 

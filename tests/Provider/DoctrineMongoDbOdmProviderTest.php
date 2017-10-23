@@ -3,12 +3,13 @@
 namespace Saxulum\Tests\DoctrineMongoDbOdm\Provider;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
+use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Saxulum\DoctrineMongoDb\Provider\DoctrineMongoDbProvider;
 use Saxulum\DoctrineMongoDbOdm\Provider\DoctrineMongoDbOdmProvider;
 use Saxulum\Tests\DoctrineMongoDbOdm\Document\Page;
 
-class DoctrineMongoDbOdmProviderTest extends \PHPUnit_Framework_TestCase
+class DoctrineMongoDbOdmProviderTest extends TestCase
 {
     protected function createMockDefaultAppAndDeps()
     {
