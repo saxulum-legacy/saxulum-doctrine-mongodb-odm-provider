@@ -5,6 +5,7 @@ namespace Saxulum\DoctrineMongoDbOdm\Driver;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as OdmClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
+use Doctrine\ODM\MongoDB\Mapping\MappingException;
 
 class ClassMapDriver implements MappingDriver
 {
@@ -26,23 +27,26 @@ class ClassMapDriver implements MappingDriver
      *
      * @param string        $className
      * @param ClassMetadata $metadata
+     * @throws MappingException
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
         if (false === $metadata instanceof OdmClassMetadata) {
-            throw new \LogicException(
+            throw new MappingException(
                 sprintf('Metadata is of class "%s" instead of "%s"', get_class($metadata), OdmClassMetadata::class)
             );
         }
 
         if (false === isset($this->classMap[$className])) {
-            return;
+            throw new MappingException(
+                sprintf('No configured mapping for document "%s"', $className)
+            );
         }
 
         $mappingClassName = $this->classMap[$className];
 
         if (false === ($mapping = new $mappingClassName()) instanceof OdmMappingInterface) {
-            throw new \LogicException('Class %s does not implement the OdmMappingInterface');
+            throw new MappingException('Class %s does not implement the OdmMappingInterface');
         }
 
         /* @var OdmMappingInterface $mapping */
