@@ -62,7 +62,7 @@ class ClassMapDriver implements MappingDriver
      */
     public function getAllClassNames()
     {
-        return $this->classMap;
+        return array_keys($this->classMap);
     }
 
     /**
