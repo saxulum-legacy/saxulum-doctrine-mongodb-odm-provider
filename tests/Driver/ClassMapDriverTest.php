@@ -59,7 +59,7 @@ class ClassMapDriverTest extends TestCase
 
         $driver = new ClassMapDriver($classMap);
 
-        self::assertEquals($classMap, $driver->getAllClassNames());
+        self::assertEquals(array_keys($classMap), $driver->getAllClassNames());
     }
 
     private function getClassMap()
