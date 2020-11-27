@@ -128,7 +128,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
                 $config->setAutoGenerateHydratorClasses($container['mongodbodm.auto_generate_hydrators']);
 
                 $config->setClassMetadataFactoryName($container['mongodbodm.class_metadata_factory_name']);
-                $config->setDefaultRepositoryClassName($container['mongodbodm.default_repository_class']);
+                $config->setDefaultDocumentRepositoryClassName($container['mongodbodm.default_repository_class']);
 
                 $config->setRepositoryFactory($container['mongodbodm.repository_factory']);
 
@@ -443,7 +443,7 @@ class DoctrineMongoDbOdmProvider implements ServiceProviderInterface
             'mongodbodm.hydrator_namespace' => 'DoctrineHydrator',
             'mongodbodm.auto_generate_hydrators' => true,
             'mongodbodm.class_metadata_factory_name' => 'Doctrine\ODM\MongoDB\Mapping\ClassMetadataFactory',
-            'mongodbodm.default_repository_class' => 'Doctrine\ODM\MongoDB\DocumentRepository',
+            'mongodbodm.default_repository_class' => 'Doctrine\ODM\MongoDB\Repository\DocumentRepository',
         ];
     }
 }
